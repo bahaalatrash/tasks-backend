@@ -2,46 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class NotesController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
-
- return DB::table('notes')->get();
+        return Note::query()->get();
     }
 
+    public function store(Request $request)
+    {
 
+        $data = $request->validate([
 
-public function store(Request $request){
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
 
+        ]);
 
-DB::table('notes')->insert([[
+        Note::query()->create(
+            $data
+        );
+    }
 
-"title"=>$request->title ,
-"body"=>$request->body
+    public function update(Request $request, int $id)
+    {
+        $data = $request->validate([
 
-]]);
-}
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
 
+        ]);
 
-public function update(Request $request ,int $id ){
+        Note::query()->where('id', $id)->update(
+            $data
+        );
+    }
 
-DB::table('notes')->where('id',$id)->update([
-    "title"=>$request->title,
-    "body"=>$request->body
-]);
+    public function destroy(int $id)
+    {
 
-
-}
-public function destroy( int $id ){
-
-DB::table('notes')->where('id',$id)->delete();
-
-
-}
-
-
+        Note::query()->where('id', $id)->delete();
+    }
 }

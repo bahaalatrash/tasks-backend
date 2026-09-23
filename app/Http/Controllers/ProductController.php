@@ -2,55 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     public function index()
     {
 
-        return DB::table('products')->get();
+        return Product::query()->get();
     }
-
 
     public function store(Request $request)
     {
 
-        DB::table('products')->insert([
+        $data = $request->validate([
 
-            "name" => $request->name,
-            "price" => $request->price,
-            "in_stock" => $request->in_stock,
-            "quantity" => $request->quantity,
-            "description" => $request->description,
-            "category_id" => $request->category_id
+            'name' => ['required', 'string', 'max:255'],
+            'price' => ['required', 'integer', 'max:99999999', 'min:0.01'],
+            'in_stock' => ['required', 'boolean'],
+            'quantity' => ['required', 'integer', 'min:0'],
+            'description' => ['required', 'string'],
+            'category_id' => ['required', 'integer', 'exists:categories,id'],
+
         ]);
-    }
 
+        Product::query()->create(
+            $data
+
+        );
+    }
 
     public function update(Request $request, int $id)
     {
 
+        $data = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'price' => ['required', 'integer', 'max:99999999', 'min:0.01'],
+                'in_stock' => ['required', 'boolean'],
+                'quantity' => ['required', 'integer', 'min:0'],
+                'description' => ['required', 'string'],
+                'category_id' => ['required', 'integer', 'exists:categories,id'],
+            ]
+        );
 
-        DB::table('products')->where('id', $id)->update([
-
-
-
-            "name" => $request->name,
-            "price" => $request->price,
-            "in_stock" => $request->in_stock,
-            "quantity" => $request->quantity,
-            "description" => $request->description,
-            "category_id" => $request->category_id
-
-
-        ]);
+        Product::query()->where('id', $id)->update(
+            $data
+        );
     }
-
 
     public function destroy(int $id)
     {
-        DB::table('products')->where('id', $id)->delete();
+        Product::query()->where('id', $id)->delete();
     }
 }

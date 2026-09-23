@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TaskController;
 use Dom\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,25 +14,14 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::prefix('categories')->group(function () {
 
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::post('/', [CategoryController::class, 'store']);
+    Route::put('/{id}', [CategoryController::class, 'update']);
+    Route::delete('/{id}', [CategoryController::class, 'destroy']);
 
-
-// Route::get('create', function () {
-
-//     DB::table('categories')->insert([[
-
-//         "name" => "frunture",
-//         "description" => "made from wood"
-
-//     ]]);
-// });
-
-
-// Route::get('categories', function () {
-//     return DB::table('categories')->get();
-// });
-
-
+});
 
 
 
@@ -59,7 +50,19 @@ Route::prefix('products')->group(function () {
 });
 
 
+Route::prefix('tasks')->group(function(){
 
+
+
+Route::get('/',[TaskController::class,'index']);
+Route::post('/',[TaskController::class,'store']);
+Route::put('/{id}',[TaskController::class,'update']);
+Route::delete('/{id}',[TaskController::class,'destroy']);
+
+
+
+
+});
 
 
 ///projects routes over here :)
@@ -96,6 +99,5 @@ Route::post('/',[CommentsController::class,'store']);
 
 
 Route::delete('/{id}',[CommentsController::class,'destroy']);
-
 
 });

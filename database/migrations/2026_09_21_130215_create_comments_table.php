@@ -13,13 +13,9 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-
-$table->foreignid('task_id')->constrained('tasks');
-$table->text('comment_text');
-$table->string('author');
-
-
-
+            $table->foreignId('task_id')->constrained('tasks');
+            $table->text('comment_text');
+            $table->string('author');
             $table->timestamps();
         });
     }
