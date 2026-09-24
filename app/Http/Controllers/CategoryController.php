@@ -7,40 +7,46 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    public function index()
+    {
 
-function index(){
+        return Category::query()->get();
 
-return Category::query()->get();
+    }
 
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
 
-}
-function store(Request $request){
+        Category::query()->create($data
+        );
 
-     Category::query()->create([
-        "name" => $request->name,
-        "description" => $request->description
-    ]);
+    }
 
-}
+    public function products($id)
+    {
 
+        $category = Category::find($id);
 
+        return $category->products;
 
-function update(Request $request ,int $id){
+    }
 
-Category::query()->where('id',$id)->update([
-        "name" => $request->name,
-        "description" => $request->description
-    ]);
+    public function update(Request $request, int $id)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+        Category::query()->where('id', $id)->update($data);
 
-}
+    }
 
-
-
-function destroy(int $id){
-    Category::query()->where('id',$id)->delete();
-}
-
-
-
-
+    public function destroy(int $id)
+    {
+        Category::query()->where('id', $id)->delete();
+    }
 }

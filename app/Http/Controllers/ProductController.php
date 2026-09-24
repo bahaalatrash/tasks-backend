@@ -13,19 +13,41 @@ class ProductController extends Controller
         return Product::query()->get();
     }
 
+    public function show(int $id)
+    {
+
+        $product = Product::findOrFail($id);
+
+        return response()->json([
+            'in_stock' => $product->in_stock,
+        ]);
+
+    }
+
+    public function showCategory($id)
+    {
+
+        $product = Product::find($id);
+
+        return $product->category;
+
+    }
+
     public function store(Request $request)
     {
 
-        $data = $request->validate([
+        $data = $request->validate(
 
-            'name' => ['required', 'string', 'max:255'],
-            'price' => ['required', 'integer', 'max:99999999', 'min:0.01'],
-            'in_stock' => ['required', 'boolean'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'description' => ['required', 'string'],
-            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            [
+                'name' => 'required|string|max:255',
+                'price' => 'required|numeric|min:0.01',
+                'in_stock' => 'required|boolean',
+                'quantity' => 'required|integer|min:0',
+                'description' => 'nullable|string',
+                'category_id' => 'required|exists:categories,id',
+            ]
 
-        ]);
+        );
 
         Product::query()->create(
             $data
@@ -38,12 +60,14 @@ class ProductController extends Controller
 
         $data = $request->validate(
             [
+
                 'name' => ['required', 'string', 'max:255'],
-                'price' => ['required', 'integer', 'max:99999999', 'min:0.01'],
+                'price' => ['required', 'numeric', 'max:99999999', 'min:0.01'],
                 'in_stock' => ['required', 'boolean'],
                 'quantity' => ['required', 'integer', 'min:0'],
-                'description' => ['required', 'string'],
+                'description' => ['nullable', 'string'],
                 'category_id' => ['required', 'integer', 'exists:categories,id'],
+
             ]
         );
 

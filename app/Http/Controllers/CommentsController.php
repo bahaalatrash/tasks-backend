@@ -15,18 +15,26 @@ class CommentsController extends Controller
 
   }
 
+  public function showTask(int $id){
+
+  $comment=  Comment::query()->find($id);
+return $comment->task;
+
+  }
 
 
 public function store(Request $request){
 
-Comment::query()->create([
 
-"task_id"=>$request->task_id,
-"comment_text"=>$request->comment_text,
-"author"=>$request->author
+$data = $request->validate([
+"task_id"=>'required|exists:tasks,id',
+"comment_text"=>'required|string',
+"author"=>'required|string|max:255'
+]);
 
 
-])
+
+Comment::query()->create($data)
 ;
 
 }

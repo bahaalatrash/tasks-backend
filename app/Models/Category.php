@@ -7,5 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['name','description'])]
 class Category extends Model
 {
-    //
+    public function products(){
+    return $this->hasMany(Product::class);
+    }
+
+
+
+
+
+
 }

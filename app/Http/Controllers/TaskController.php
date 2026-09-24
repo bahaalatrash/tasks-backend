@@ -15,8 +15,8 @@ function store(Request $request){
 
     $data=$request->validate([
         "title"=>['required','string','max:255'],
-        "description"=>['required','string'],
-        "status"=>['required','string','in:pending,completed,in-progress'],
+        "details"=>['required','string'],
+        "status"=>['required','string'],
         "due_date"=>['required','date'],
     ]);
 
@@ -28,8 +28,8 @@ function update(Request $request,int $id){
 
     $data=$request->validate([
         "title"=>['required','string','max:255'],
-        "description"=>['required','string'],
-        "status"=>['required','string','in:pending,completed,in-progress'],
+        "details"=>['required','string'],
+        "status"=>['required','boolean'],
         "due_date"=>['required','date'],
     ]);
 
