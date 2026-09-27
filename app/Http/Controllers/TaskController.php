@@ -2,45 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskStoreRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    public function index()
+    {
+        $data = Task::query()->get();
 
-function index(){
-    return Task::query()->get();
-}
-function store(Request $request){
+        return response()->json([
+            'message' => 'all  tasks in database',
+            'tasks' => $data,
+        ]);
 
-    $data=$request->validate([
-        "title"=>['required','string','max:255'],
-        "details"=>['required','string'],
-        "status"=>['required','string'],
-        "due_date"=>['required','date'],
-    ]);
-
-    Task::query()->create(
-        $data
-    );}
-
-function update(Request $request,int $id){
-
-    $data=$request->validate([
-        "title"=>['required','string','max:255'],
-        "details"=>['required','string'],
-        "status"=>['required','boolean'],
-        "due_date"=>['required','date'],
-    ]);
-
-    Task::query()->where('id',$id)->update(
-        $data
-    );}
-    function destroy(int $id){
-        Task::query()->where('id',$id)->delete();
     }
 
+    public function store(TaskStoreRequest $request)
+    {
 
+        Task::query()->create(
+            $request->validated()
+        );
 
+        return response()->json([
+            'message' => 'task created successfully',
+        ]);
+    }
 
+    public function update(TaskStoreRequest $request, int $id)
+    {
+
+        Task::query()->where('id', $id)->update(
+            $request->validated()
+        );
+
+        return response()->json([
+            'message' => 'task updated successfully',
+        ]);
+
+    }
+
+    public function destroy(int $id)
+    {
+        Task::query()->where('id', $id)->delete();
+
+        return response()->json([
+            'message' => 'task deleted successfully',
+        ]);
+    }
 }

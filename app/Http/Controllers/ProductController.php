@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProdcutStoreRequest;
 use App\Models\Product;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index()
     {
+        $data = Product::query()->get();
 
-        return Product::query()->get();
+        return response()->json([
+            'message' => 'all product in database',
+            'data' => $data,
+        ]);
+
     }
 
     public function show(int $id)
@@ -33,51 +38,41 @@ class ProductController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(ProdcutStoreRequest $request)
     {
-
-        $data = $request->validate(
-
-            [
-                'name' => 'required|string|max:255',
-                'price' => 'required|numeric|min:0.01',
-                'in_stock' => 'required|boolean',
-                'quantity' => 'required|integer|min:0',
-                'description' => 'nullable|string',
-                'category_id' => 'required|exists:categories,id',
-            ]
-
-        );
 
         Product::query()->create(
-            $data
+            $request->validated()
 
         );
+
+        return response()->json([
+            'message' => 'product created successfully',
+
+        ], 201);
+
     }
 
-    public function update(Request $request, int $id)
+    public function update(ProdcutStoreRequest $request, int $id)
     {
 
-        $data = $request->validate(
-            [
-
-                'name' => ['required', 'string', 'max:255'],
-                'price' => ['required', 'numeric', 'max:99999999', 'min:0.01'],
-                'in_stock' => ['required', 'boolean'],
-                'quantity' => ['required', 'integer', 'min:0'],
-                'description' => ['nullable', 'string'],
-                'category_id' => ['required', 'integer', 'exists:categories,id'],
-
-            ]
-        );
-
         Product::query()->where('id', $id)->update(
-            $data
+            $request->validated()
         );
+
+        return response()->json([
+            'message' => 'product updated successfully',
+
+        ], 201);
     }
 
     public function destroy(int $id)
     {
         Product::query()->where('id', $id)->delete();
+
+        return response()->json([
+            'message' => 'product deleted successfully',
+
+        ]);
     }
 }

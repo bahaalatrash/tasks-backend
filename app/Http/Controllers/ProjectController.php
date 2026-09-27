@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProjectStoreRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -9,22 +10,22 @@ class ProjectController extends Controller
 {
     public function index()
     {
+        $data = Project::query()->get();
 
-        return Project::query()->get();
-
+        return response()->json([
+            'message' => 'all projects in database ',
+            'data' => $data,
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(ProjectStoreRequest $request)
     {
-        $data = $request->validate([
 
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after:start_date',
-            'status' => 'required|boolean',
+        Project::query()->create($request->validated());
+
+        return response()->json([
+            'message' => 'project created successfully',
 
         ]);
-        Project::query()->create($data);
     }
 }

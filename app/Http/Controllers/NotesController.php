@@ -2,49 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NoteStoreRequest;
 use App\Models\Note;
-use Illuminate\Http\Request;
 
 class NotesController extends Controller
 {
     public function index()
     {
 
-        return Note::query()->get();
+        $data = Note::query()->get();
+
+        return response()->json([
+            'message' => 'all notes in database',
+            'data' => $data,
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(NoteStoreRequest $request)
     {
-
-        $data = $request->validate([
-
-            'title' => ['required', 'string', 'max:255'],
-            'body' => ['required', 'string'],
-
-        ]);
-
         Note::query()->create(
-            $data
+            $request->validated()
         );
+
+        return response()->json([
+            'message' => 'note created successfully',
+        ], 200);
     }
 
-    public function update(Request $request, int $id)
+    public function update(NoteStoreRequest $request, int $id)
     {
-        $data = $request->validate([
-
-            'title' => ['required', 'string', 'max:255'],
-            'body' => ['required', 'string'],
-
-        ]);
-
         Note::query()->where('id', $id)->update(
-            $data
+            $request->validated()
         );
+
+        return response()->json([
+            'message' => 'note updated successfully',
+        ], 201);
     }
 
     public function destroy(int $id)
     {
 
         Note::query()->where('id', $id)->delete();
+
+        return response()->json([
+            'message' => 'note deleted successfully',
+        ]);
     }
 }

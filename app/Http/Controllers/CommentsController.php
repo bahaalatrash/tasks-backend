@@ -2,50 +2,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentStoreRequest;
 use App\Models\Comment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CommentsController extends Controller
 {
-  public function show ( int $task_id){
+    public function show(int $task_id)
+    {
 
-   return Comment::query()->where('task_id',$task_id
-  )->get();
+        $data= Comment::query()->where('task_id', $task_id
+        )->get();
+  return response()->json([
+            'message' => 'all comments for this task in database',
+            "data"=>$data
 
-  }
+        ]);
+    }
 
-  public function showTask(int $id){
+    public function showTask(int $id)
+    {
 
-  $comment=  Comment::query()->find($id);
-return $comment->task;
+        $comment = Comment::query()->find($id);
 
-  }
+        return $comment->task;
 
+    }
 
-public function store(Request $request){
-
-
-$data = $request->validate([
-"task_id"=>'required|exists:tasks,id',
-"comment_text"=>'required|string',
-"author"=>'required|string|max:255'
-]);
-
-
-
-Comment::query()->create($data)
-;
-
-}
+    public function store(CommentStoreRequest $request)
+    {
 
 
-public function destroy(int $id){
 
+        Comment::query()->create($request->validated());
+          return response()->json([
+            'message' => 'comment created successfully',
 
-Comment::query()->where('id',$id)->delete();
+        ], 201);
 
-}
+    }
 
+    public function destroy(int $id)
+    {
 
+        Comment::query()->where('id', $id)->delete();
+          return response()->json([
+            'message' => 'comment deleted successfully',
+
+        ]);
+
+    }
 }
